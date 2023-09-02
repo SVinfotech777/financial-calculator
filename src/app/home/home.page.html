@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-icon name="close" class="settings-icon" 
+    style="left: 16px !important;right: unset !important;" (click)="closeApp()"></ion-icon>
+    <ion-title style="text-align: center;">
+      Calculator
+    </ion-title>
+    <ion-icon name="settings" class="settings-icon" (click)="openSettingsPage()"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" *ngFor="let item of categoriesList">
+        <ion-card style="margin: 0px;border-radius: 10px;padding: 15px;" (click)="openCalculator(item)">
+          <ion-card-content style="padding: 7px 16px !important;">
+            <p class="category-name">{{item.name}}</p>
+            <ion-icon name="chevron-forward-outline" class="right-arrow-icon"></ion-icon>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

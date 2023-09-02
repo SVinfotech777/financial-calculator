@@ -1,0 +1,26 @@
+.right-arrow-icon {
+  color: #000;
+  font-size: 30px;
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+}
+
+.category-name {
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #000 !important;
+}
+
+.settings-icon {
+  font-size: 26px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 16px;
+  color: #fff;
+}

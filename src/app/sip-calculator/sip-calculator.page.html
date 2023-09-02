@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title class="main-title">SIP Calculator</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <!--  -->
+  <ion-row style="padding: 5px 10px;margin: 0;">
+    <ion-col size="12">
+      <p style="margin: 15px 0px 0px !important;">Monthly Investment (Rs.)</p>
+    </ion-col>
+
+    <ion-col size="12">
+      <input type="number" placeholder="Enter Amount" [(ngModel)]="monthlyInvestment" class="input-type">
+    </ion-col>
+
+    <ion-col size="12">
+      <p style="margin: 15px 0px 0px !important;">Exp. Return Rate (%)</p>
+    </ion-col>
+
+    <ion-col size="12">
+      <input type="number" placeholder="Enter Rate" [(ngModel)]="returnRate" class="input-type">
+    </ion-col>
+
+    <ion-col size="12">
+      <p style="margin: 15px 0px 0px !important;">Period (Year)</p>
+    </ion-col>
+
+    <ion-col size="12">
+      <ion-select [(ngModel)]="totalYears" class="year-select">
+        <ion-select-option class="year-select-option"
+          *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]" [value]="i">
+          {{i}}
+        </ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+
+  <!-- Button -->
+  <ion-row style="padding: 0px 10px 15px;" >
+    <ion-col size="6">
+      <ion-button type="button" class="calculate-btn" (click)="calculateValue()">
+        Calculate</ion-button>
+    </ion-col>
+    <ion-col size="6">
+      <ion-button (click)="resetValue()" type="button" class="calculate-btn">Reset</ion-button>
+    </ion-col>
+  </ion-row>
+
+  <!-- Result -->
+  <ion-row class="result-table" *ngIf="totalInvestment">
+    <ion-row>
+      <ion-col size="7">
+        <div>Total Investment (Rs.)</div>
+      </ion-col>
+      <ion-col size="1" class="ion-text-center">:</ion-col>
+      <ion-col size="4" class="ion-text-end">
+        <div *ngIf="totalInvestment">{{totalInvestment}}</div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="7">
+        <div>Estimated Returns (Rs.)</div>
+      </ion-col>
+      <ion-col size="1" class="ion-text-center">:</ion-col>
+      <ion-col size="4" class="ion-text-end">
+        <div *ngIf="estimatedReturns">{{estimatedReturns}}</div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="7">
+        <div>Total Value (Rs.)</div>
+      </ion-col>
+      <ion-col size="1" class="ion-text-center">:</ion-col>
+      <ion-col size="4" class="ion-text-end">
+        <div *ngIf="totalValue">{{totalValue}}</div>
+      </ion-col>
+    </ion-row>
+  </ion-row>
+</ion-content>
