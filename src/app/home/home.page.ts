@@ -50,7 +50,7 @@ export class HomePage {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: !environment.production
+      isTesting: true
     };
     await AdMob.showBanner(options)
     this.isShowBanner = true;

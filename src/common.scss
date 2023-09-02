@@ -10,7 +10,13 @@
 .year-select {
   border: 1px solid #dcdce0;
   border-radius: 5px;
+  min-height: 45px !important;
   height: 45px;
+}
+
+ion-select::part(container) {
+    min-width: calc(100% - 20px);
+    padding: 0px 10px;
 }
 
 .year-select-option {

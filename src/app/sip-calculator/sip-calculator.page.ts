@@ -48,8 +48,7 @@ export class SipCalculatorPage implements OnInit {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: !environment.production,
-      // npa: true
+      isTesting: true
     };
     AdMob.showBanner(options).then(
       (res) => {
@@ -65,7 +64,7 @@ export class SipCalculatorPage implements OnInit {
   async prepareInterstitial() {
     const options: AdOptions = {
       adId: 'ca-app-pub-3228515841874235/6851516676',
-      isTesting: !environment.production
+      isTesting: true
     };
     await AdMob.prepareInterstitial(options);
     await AdMob.showInterstitial();
