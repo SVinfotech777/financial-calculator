@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Share } from '@capacitor/share';
 import { AlertService } from '../provider/alert.service';
+import { App, AppInfo } from "@capacitor/app";
 
 @Component({
   selector: 'app-side-menu',
@@ -10,6 +11,7 @@ import { AlertService } from '../provider/alert.service';
 })
 export class SideMenuPage implements OnInit {
 
+  appInfo: AppInfo
   public appPages = [
     {
       title: 'Home',
@@ -40,18 +42,20 @@ export class SideMenuPage implements OnInit {
       url: '/folder/PrivacyPolicy',
       icon: 'information-circle',
       subTitle: "Read our privacy & policy"
-    },
-    {
-      title: "App version",
-      url: "/folder/appVersion",
-      icon: "phone-portrait-outline",
-      subTitle: "1.1.0"
     }
-  ];
+  ]
 
   constructor(public alertService: AlertService, private router: Router) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    let appInfo = await App.getInfo()
+    console.log('appInfo: ', appInfo);
+    this.appPages.push({
+      title: "App version",
+      url: "/folder/appVersion",
+      icon: "phone-portrait-outline",
+      subTitle: this.appInfo.version
+    })
   }
 
   async selectIndex(p: any) {
