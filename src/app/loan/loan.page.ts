@@ -1,13 +1,22 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
+import { IonicModule } from '@ionic/angular';
 import { AlertService } from '../provider/alert.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-loan',
   templateUrl: './loan.page.html',
-  styleUrls: ['./loan.page.scss'],
+  styleUrls: ['../../common.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    FormsModule,
+    NgFor,
+    NgIf,
+  ],
 })
 export class LoanPage implements OnInit {
 
@@ -29,17 +38,10 @@ export class LoanPage implements OnInit {
   }
 
   async initialize() {
-    AdMob.initialize({
+    await AdMob.initialize({
       requestTrackingAuthorization: true,
       initializeForTesting: true,
-    }).then(
-      (res) => {
-        console.log('res: initialize', res);
-      },
-      (err) => {
-        console.log('err: initialize', err);
-      }
-    );
+    });
   }
 
   isShowBanner: boolean = false;
@@ -49,23 +51,17 @@ export class LoanPage implements OnInit {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: true
+      isTesting: false
     };
-    AdMob.showBanner(options).then(
-      (res) => {
-        console.log('res: showbanner', res);
-        this.isShowBanner = true;
-      },
-      (err) => {
-        console.log('err: showbanner', err);
-      }
-    );
+    AdMob.showBanner(options).then(() => {
+      this.isShowBanner = true;
+    });
   }
 
   async prepareInterstitial() {
     const options: AdOptions = {
       adId: 'ca-app-pub-3228515841874235/8765016530',
-      isTesting: true
+      isTesting: false
     };
     await AdMob.prepareInterstitial(options);
     await AdMob.showInterstitial();
@@ -75,59 +71,50 @@ export class LoanPage implements OnInit {
   // calculate value
   async calculateValue() {
     let errMsg = '';
-    if(!this.loanAmount) {
-      errMsg = "Please enter loan amount"
-    } else if(!this.annualRate) {
+    if (!this.loanAmount) {
+      errMsg = "Please enter loan amount";
+    } else if (!this.annualRate) {
       errMsg = "Please enter annual rate";
-    } else if(!this.loanTeam) {
-      errMsg = "Please select total years"
+    } else if (!this.loanTeam) {
+      errMsg = "Please select total years";
     }
 
-    if(errMsg) {
+    if (errMsg) {
       await this.alertService.presentToast(errMsg);
       return;
-    } 
+    }
 
-    if(this.clickedCount == 3) {
-      await this.prepareInterstitial().then(() => {
-        console.log("89");
-      }, (err) => {
-        console.log('err: 91', err);
-      });;
+    if (this.clickedCount == 3) {
+      await this.prepareInterstitial();
       this.clickedCount = 0;
     }
-    console.log('this.clickedCount: ', this.clickedCount);
-    
+
     this.clickedCount++;
     var p = this.loanAmount; //principal amount
-    var annualRate = this.annualRate; 
+    var annualRate = this.annualRate;
     var i = annualRate / 12 / 100;  //Rate of interest
-    var years = this.loanTeam; 
-    var n = years * 12;  //Time period 
+    var years = this.loanTeam;
+    var n = years * 12;  //Time period
 
     // Monthly Repayment
     let monthlyRepayment = (p * i * (Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1));
-    this.monthlyRepayment = monthlyRepayment.toLocaleString("en-IN")
+    this.monthlyRepayment = monthlyRepayment.toLocaleString("en-IN");
 
     // principal Paid (P)
     this.principalPaid = p.toLocaleString("en-IN");
 
     // Interest Paid (I)
     let interestPaid = (monthlyRepayment * n) - p;
-    this.interestPaid = interestPaid.toLocaleString("en-IN")
+    this.interestPaid = interestPaid.toLocaleString("en-IN");
 
     // Total Repayments Paid(P + I)
-    this.totalRepaymentsPaid = (p + interestPaid).toLocaleString("en-IN")
+    this.totalRepaymentsPaid = (p + interestPaid).toLocaleString("en-IN");
 
   }
 
   // reset value
   async resetValue() {
-    await this.prepareInterstitial().then(() => {
-      console.log("123");
-    }, (err) => {
-      console.log('err: 125', err);
-    });;
+    await this.prepareInterstitial();
     this.loanAmount = '';
     this.annualRate = '';
     this.loanTeam = '';

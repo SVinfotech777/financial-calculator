@@ -1,13 +1,21 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
-import { ToastController } from '@ionic/angular';
-import { environment } from 'src/environments/environment';
+import { IonicModule, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sip-calculator',
   templateUrl: './sip-calculator.page.html',
-  styleUrls: ['./sip-calculator.page.scss'],
+  styleUrls: ['../../common.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    FormsModule,
+    NgFor,
+    NgIf,
+  ],
 })
 export class SipCalculatorPage implements OnInit {
 
@@ -29,17 +37,10 @@ export class SipCalculatorPage implements OnInit {
   }
 
   async initialize() {
-    AdMob.initialize({
+    await AdMob.initialize({
       requestTrackingAuthorization: true,
       initializeForTesting: true,
-    }).then(
-      (res) => {
-        console.log('res: initialize', res);
-      },
-      (err) => {
-        console.log('err: initialize', err);
-      }
-    );
+    });
   }
 
   banner() {
@@ -48,23 +49,18 @@ export class SipCalculatorPage implements OnInit {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: true
+      isTesting: false
     };
     AdMob.showBanner(options).then(
-      (res) => {
-        console.log('res: showbanner', res);
+      () => {
         this.isShowBanner = true;
-      },
-      (err) => {
-        console.log('err: showbanner', err);
-      }
-    );
+      });
   }
 
   async prepareInterstitial() {
     const options: AdOptions = {
       adId: 'ca-app-pub-3228515841874235/6851516676',
-      isTesting: true
+      isTesting: false
     };
     await AdMob.prepareInterstitial(options);
     await AdMob.showInterstitial();
@@ -74,47 +70,38 @@ export class SipCalculatorPage implements OnInit {
   async calculateValue() {
 
     let errMsg = '';
-    if(!this.monthlyInvestment) {
-      errMsg = "Please enter monthly investment amount"
-    } else if(!this.returnRate) {
+    if (!this.monthlyInvestment) {
+      errMsg = "Please enter monthly investment amount";
+    } else if (!this.returnRate) {
       errMsg = "Please enter return rate";
-    } else if(!this.totalYears) {
-      errMsg = "Please enter total years"
+    } else if (!this.totalYears) {
+      errMsg = "Please enter total years";
     }
 
-    if(errMsg) {
+    if (errMsg) {
       await this.presentToast(errMsg);
       return;
-    } 
+    }
 
-    if(this.clickedCount == 3) {
-      await this.prepareInterstitial().then(() => {
-        console.log("90");
-      }, (err) => {
-        console.log('err: 92', err);
-      });
+    if (this.clickedCount == 3) {
+      await this.prepareInterstitial();
       this.clickedCount = 0;
     }
-    console.log('this.clickedCount: ', this.clickedCount);
     this.clickedCount++;
     var investment = this.monthlyInvestment; //principal amount
-    var annualRate = this.returnRate; 
+    var annualRate = this.returnRate;
     var monthlyRate = annualRate / 12 / 100;  //Rate of interest
-    var years = this.totalYears; 
-    var months = years * 12;  //Time period 
+    var years = this.totalYears;
+    var months = years * 12;  //Time period
     this.totalInvestment = (months * investment).toLocaleString('en-IN');
 
-    this.totalValue = Math.floor(investment * (Math.pow(1 + monthlyRate, months) - 1) /monthlyRate).toLocaleString('en-IN');
-    this.estimatedReturns = (Math.floor(Number(investment * (Math.pow(1 + monthlyRate, months) - 1) /monthlyRate) - Number(months * investment))).toLocaleString('en-IN')
+    this.totalValue = Math.floor(investment * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate).toLocaleString('en-IN');
+    this.estimatedReturns = (Math.floor(Number(investment * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) - Number(months * investment))).toLocaleString('en-IN');
   }
 
   // reset value
   async resetValue() {
-    await this.prepareInterstitial().then(() => {
-      console.log("112");
-    }, (err) => {
-      console.log('err: 114', err);
-    });
+    await this.prepareInterstitial();
     this.monthlyInvestment = '';
     this.returnRate = '';
     this.totalYears = '';

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
-  ToastController,
-  LoadingController,
   AlertController,
+  LoadingController,
+  ToastController,
 } from '@ionic/angular';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class AlertService {
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController
-  ) {}
+  ) { }
 
   async presentLoader(message: string) {
     this.loadingCtrl
@@ -32,10 +32,7 @@ export class AlertService {
   public dismissLoader() {
     this.loadingCtrl
       .dismiss()
-      .then((response) => {})
-      .catch((err) => {
-        console.log('Error occurred : ', err);
-      });
+      .then(() => { });
   }
 
   // --- present toast
@@ -57,14 +54,14 @@ export class AlertService {
         buttons: buttons
           ? buttons
           : [
-              {
-                text: 'Cancel',
-                role: 'cancel',
-                handler: () => {
-                  resolve('');
-                },
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => {
+                resolve('');
               },
-            ],
+            },
+          ],
       });
       this.alert.present();
       return alert;

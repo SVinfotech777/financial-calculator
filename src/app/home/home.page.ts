@@ -1,17 +1,19 @@
+import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AdMob,
-  AdOptions,
   BannerAdOptions,
   BannerAdPosition,
-  BannerAdSize,
+  BannerAdSize
 } from '@capacitor-community/admob';
-import { environment } from 'src/environments/environment.prod';
+import { IonicModule } from '@ionic/angular';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  standalone: true,
+  imports: [IonicModule, NgFor],
 })
 export class HomePage {
   categoriesList: any[] = [
@@ -27,9 +29,9 @@ export class HomePage {
     //   name: "Fixed Deposit",
     //   route: 'fixed-deposit'
     // }
-  ]
+  ];
 
-  constructor(public router: Router) {}
+  constructor(public router: Router) { }
 
   async ngOnInit() {
     await this.initialize();
@@ -40,7 +42,7 @@ export class HomePage {
     await AdMob.initialize({
       requestTrackingAuthorization: true,
       initializeForTesting: true,
-    })
+    });
   }
 
   isShowBanner: boolean = false;
@@ -50,16 +52,16 @@ export class HomePage {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: true
+      isTesting: false
     };
-    await AdMob.showBanner(options)
+    await AdMob.showBanner(options);
     this.isShowBanner = true;
   }
 
 
   async openCalculator(item) {
     if (this.isShowBanner) AdMob.removeBanner();
-    await this.router.navigate([item.route])
+    await this.router.navigate([item.route]);
   }
 
   ngonDestroy() {
