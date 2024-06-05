@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "resources": "capacitor-resources -p android,ios && node resources.js",
-    "prodBuild": "ionic build --prod && npx cap build android && npx cap sync android && npx cap open android"
+    "prodBuild": "ionic build && npx cap build android && npx cap sync android && npx cap open android"
   },
   "private": true,
   "dependencies": {
@@ -49,6 +49,7 @@
     "@angular/compiler": "^16.2.3",
     "@angular/compiler-cli": "^16.2.3",
     "@angular/language-service": "^16.2.3",
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^5.3.0",
     "@ionic/angular-toolkit": "^10.0.0",
     "@types/jasmine": "^4.3.5",
