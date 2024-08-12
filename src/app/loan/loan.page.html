@@ -19,9 +19,7 @@
 
           <ion-col size="12" class="title-data-col">
             <input type="number" id="loanAmount" placeholder="Enter Amount" [(ngModel)]="loanAmount" class="input-type">
-          </ion-col>
-          <ion-col size="12" *ngIf="loanAmountInWords">
-            <span style="user-select: all;">{{loanAmountInWords}}</span>
+            <span *ngIf="loanAmountInWords" style="user-select: all;font-weight: bold;">{{loanAmountInWords}}</span>
           </ion-col>
 
           <ion-col size="12" class="title-data-col">

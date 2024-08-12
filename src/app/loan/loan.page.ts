@@ -234,9 +234,11 @@ export class LoanPage implements OnInit {
         str += (Number(d[1]) !== 0) ? ((str !== '') ? "and " : '') + (this.a[Number(d[1])] || this.b[d[1][0]] + ' ' + this.a[d[1][1]]) + 'Paise Only' : 'Only';
         this.loanAmountInWords = str;
       } else {
+        this.loanAmountInWords = '';
         return '';
       }
     } else {
+      this.loanAmountInWords = '';
       return '';
     }
   }

@@ -33,7 +33,7 @@ export class SipCalculatorPage implements OnInit {
   async ngOnInit() {
     await this.initialize();
     await this.banner();
-    await this.prepareInterstitial();
+    // await this.prepareInterstitial();
   }
 
   async initialize() {
@@ -82,10 +82,10 @@ export class SipCalculatorPage implements OnInit {
       return;
     }
 
-    if (this.clickedCount == 3) {
-      await this.prepareInterstitial();
-      this.clickedCount = 0;
-    }
+    // if (this.clickedCount == 3) {
+    //   await this.prepareInterstitial();
+    //   this.clickedCount = 0;
+    // }
     this.clickedCount++;
     var investment = this.monthlyInvestment; //principal amount
     var annualRate = this.returnRate;
@@ -100,7 +100,7 @@ export class SipCalculatorPage implements OnInit {
 
   // reset value
   async resetValue() {
-    await this.prepareInterstitial();
+    // await this.prepareInterstitial();
     this.monthlyInvestment = '';
     this.returnRate = '';
     this.totalYears = '';
