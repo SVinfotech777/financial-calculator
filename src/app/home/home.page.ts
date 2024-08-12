@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AdMob,
@@ -7,7 +7,8 @@ import {
   BannerAdPosition,
   BannerAdSize
 } from '@capacitor-community/admob';
-import { IonicModule } from '@ionic/angular';
+import { App } from '@capacitor/app';
+import { IonicModule, IonRouterOutlet, Platform, ToastController } from '@ionic/angular';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -16,14 +17,17 @@ import { IonicModule } from '@ionic/angular';
   imports: [IonicModule, NgFor],
 })
 export class HomePage {
+  @ViewChild(IonRouterOutlet) routerOutlet: IonRouterOutlet;
   categoriesList: any[] = [
     {
-      name: "SIP", // Systematic Investment Plan
-      route: 'sip-calculator'
+      name: "Loan",
+      route: 'loan',
+      icon: 'assets/imgs/loan.jpeg'
     },
     {
-      name: "Loan",
-      route: 'loan'
+      name: "SIP", // Systematic Investment Plan
+      route: 'sip-calculator',
+      icon: 'assets/imgs/sip.jpeg'
     },
     // {
     //   name: "Fixed Deposit",
@@ -31,7 +35,9 @@ export class HomePage {
     // }
   ];
 
-  constructor(public router: Router) { }
+  constructor(public router: Router,
+    private platform: Platform,
+    private toastCtrl: ToastController) { }
 
   async ngOnInit() {
     await this.initialize();
@@ -40,8 +46,7 @@ export class HomePage {
 
   async initialize() {
     await AdMob.initialize({
-      requestTrackingAuthorization: true,
-      initializeForTesting: true,
+      initializeForTesting: true
     });
   }
 
@@ -52,7 +57,7 @@ export class HomePage {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: false
+      isTesting: true
     };
     await AdMob.showBanner(options);
     this.isShowBanner = true;
@@ -73,6 +78,38 @@ export class HomePage {
   }
 
   closeApp() {
-    navigator['app'].exitApp();
+    App.exitApp();
+  }
+
+  async handleAndroidBackButton() {
+    if (this.platform.is('android') && this.platform.is('capacitor')) {
+      let lastTimeBackPress = 0;
+      const timePeriodToExit = 2000;
+      this.platform.backButton.subscribeWithPriority(0, () => {
+        if (this.router.url === '/home') {
+          if (new Date().getTime() - lastTimeBackPress < timePeriodToExit) {
+            App.exitApp();
+          } else {
+            this.showToaster('Press back again to exit app');
+            lastTimeBackPress = new Date().getTime();
+          }
+        } else if (this.routerOutlet.canGoBack()) {
+          this.routerOutlet.pop();
+        } else if (history.length) {
+          window.history.back();
+        }
+      });
+    }
+  }
+
+  async showToaster(text: string, cssClass?: string) {
+    const toasterRef = await this.toastCtrl.create({
+      message: text,
+      duration: 3000,
+      position: 'top',
+      cssClass: cssClass || '',
+      mode: 'ios',
+    });
+    toasterRef.present();
   }
 }

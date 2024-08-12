@@ -4,24 +4,24 @@ ion-header::after {
 
 .side-menu-title {
   margin: 0px 0px 5px !important;
-  color: #eef2f9 !important;
+  color: #000 !important;
   font-weight: bold !important;
 }
 
 .side-menu-item-subtitle {
-  color: #eef2f9 !important;
+  color: #000 !important;
   font-size: 13px;
 }
 
 .menu-items {
   background: transparent !important;
-  color: #eef2f9 !important;
+  color: #000 !important;
 }
 
 .sidemenu-icon {
   width: 35px;
   margin-right: 25px;
-  color: #eef2f9;
+  color: #000;
   height: 28px;
   position: absolute;
   top: 50%;
@@ -29,12 +29,12 @@ ion-header::after {
   transform: translate(-50%, -50%);
 }
 .menu-items.selected {
-  color: #4153ff !important;
-  background: #434ce7 !important;
+  color: #ffc788 !important;
+  background: #ffc788 !important;
 
   .side-menu-title,
   .side-menu-item-subtitle,
   .sidemenu-icon {
-    color: #eef2f9 !important;
+    color: #000 !important;
   }
 }

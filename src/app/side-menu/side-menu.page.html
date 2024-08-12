@@ -1,14 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button style="color: #fff !important;"></ion-back-button>
+      <ion-back-button style="color: #000 !important;"></ion-back-button>
     </ion-buttons>
-    <ion-title class="main-title" style="color: #fff !important;">Settings</ion-title>
+    <ion-title class="main-title" style="color: #000 !important;">Settings</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #4153ff !important;">
-  <ion-grid>
+<ion-content style="--background: #FFDEC0 !important;">
+  <ion-grid style="margin-top: 15px;">
     <ion-row *ngFor="let p of appPages; let i = index" (click)="selectIndex(p)"
       [class.selected]="alertService.selectedIndex == i" class="menu-items"
       style="margin-bottom: 8px;border-radius: 10px;">

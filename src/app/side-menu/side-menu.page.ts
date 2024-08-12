@@ -78,7 +78,7 @@ export class SideMenuPage implements OnInit {
     } else if (p.url == '/folder/MoreApps') {
       window.open('https://play.google.com/store/apps/developer?id=SVInfotech');
     } else if (p.url == '/folder/PrivacyPolicy') {
-      window.open('https://svinfotechapppolicy.000webhostapp.com/');
+      window.open('https://svinfotech777.github.io/privacy-policy');
     }
 
     setTimeout(() => {

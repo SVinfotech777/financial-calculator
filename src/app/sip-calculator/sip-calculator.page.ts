@@ -8,13 +8,13 @@ import { IonicModule, ToastController } from '@ionic/angular';
 @Component({
   selector: 'app-sip-calculator',
   templateUrl: './sip-calculator.page.html',
-  styleUrls: ['../../common.scss'],
+  styleUrls: ['../../common.scss', './sip-calculator.page.scss'],
   standalone: true,
   imports: [
     IonicModule,
     FormsModule,
     NgFor,
-    NgIf,
+    NgIf
   ],
 })
 export class SipCalculatorPage implements OnInit {
@@ -38,8 +38,7 @@ export class SipCalculatorPage implements OnInit {
 
   async initialize() {
     await AdMob.initialize({
-      requestTrackingAuthorization: true,
-      initializeForTesting: true,
+      initializeForTesting: false,
     });
   }
 
@@ -49,7 +48,7 @@ export class SipCalculatorPage implements OnInit {
       adSize: BannerAdSize.FULL_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: false
+      isTesting: true
     };
     AdMob.showBanner(options).then(
       () => {
@@ -60,7 +59,7 @@ export class SipCalculatorPage implements OnInit {
   async prepareInterstitial() {
     const options: AdOptions = {
       adId: 'ca-app-pub-3228515841874235/6851516676',
-      isTesting: false
+      isTesting: true
     };
     await AdMob.prepareInterstitial(options);
     await AdMob.showInterstitial();
