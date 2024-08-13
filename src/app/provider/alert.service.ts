@@ -40,6 +40,7 @@ export class AlertService {
     const toast = await this.toastCtrl.create({
       message: msg,
       duration: 3000,
+      position: "top"
     });
     toast.present();
   }

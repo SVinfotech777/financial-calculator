@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { IonicModule } from '@ionic/angular';
 import { AlertService } from '../provider/alert.service';
+import { Clipboard } from '@capacitor/clipboard';
 
 @Component({
   selector: 'app-loan',
@@ -205,6 +206,8 @@ export class LoanPage implements OnInit {
     this.principalPaid = '';
     this.interestPaid = '';
     this.totalRepaymentsPaid = '';
+    this.repaymentSchedule = [];
+    this.loanAmountInWords = '';
   }
 
   async presentToast(errorMsg) {
@@ -241,6 +244,11 @@ export class LoanPage implements OnInit {
       this.loanAmountInWords = '';
       return '';
     }
+  }
+
+  async copyWords() {
+    this.alertService.presentToast("Copied")
+    await Clipboard.write({string: this.loanAmountInWords})
   }
 
 }
