@@ -19,9 +19,10 @@
 
           <ion-col size="12" class="title-data-col">
             <input type="number" id="loanAmount" placeholder="Enter Amount" [(ngModel)]="loanAmount" class="input-type">
-            <div *ngIf="loanAmountInWords" style="display: flex;align-items: center;">
+            <div *ngIf="loanAmountInWords" style="display: flex;align-items: center;padding-top: 5px;">
               <span style="user-select: all;font-weight: bold;">{{loanAmountInWords}}</span>
-              <ion-icon name="copy-outline" style="padding-left: 10px;" (click)="copyWords()"></ion-icon>
+              <ion-icon name="copy-outline" style="padding-left: 10px;font-size: 25px;"
+                (click)="copyWords()"></ion-icon>
             </div>
           </ion-col>
 

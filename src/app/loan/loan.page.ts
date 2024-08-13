@@ -1,11 +1,10 @@
 import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
+import { Clipboard } from '@capacitor/clipboard';
 import { IonicModule } from '@ionic/angular';
 import { AlertService } from '../provider/alert.service';
-import { Clipboard } from '@capacitor/clipboard';
 
 @Component({
   selector: 'app-loan',
@@ -66,10 +65,10 @@ export class LoanPage implements OnInit {
   loanAmountInWords: string = '';
 
 
-  constructor(private alertService: AlertService, private router: Router) { }
+  constructor(private alertService: AlertService) { }
 
   async ngOnInit() {
-    await this.initialize();
+    // await this.initialize();
     // await this.prepareInterstitial();
     await this.banner();
 
@@ -82,11 +81,11 @@ export class LoanPage implements OnInit {
     });
   }
 
-  async initialize() {
-    await AdMob.initialize({
-      initializeForTesting: true,
-    });
-  }
+  // async initialize() {
+  //   await AdMob.initialize({
+  //     initializeForTesting: true,
+  //   });
+  // }
 
   isShowBanner: boolean = false;
   banner() {
@@ -100,6 +99,12 @@ export class LoanPage implements OnInit {
     AdMob.showBanner(options).then(() => {
       this.isShowBanner = true;
     });
+
+    // Reload banner ad every 1 minute
+    setInterval(async () => {
+      await AdMob.removeBanner(); // Remove the existing banner
+      this.banner();
+    }, 60000); // 60,000 milliseconds = 1 minute
   }
 
   async prepareInterstitial() {
@@ -136,10 +141,10 @@ export class LoanPage implements OnInit {
       return;
     }
 
-    if (this.clickedCount == 3) {
-      await this.prepareInterstitial();
-      this.clickedCount = 0;
-    }
+    // if (this.clickedCount == 3) {
+    //   await this.prepareInterstitial();
+    //   this.clickedCount = 0;
+    // }
 
     this.clickedCount++;
     const principal = this.loanAmount;
@@ -197,7 +202,7 @@ export class LoanPage implements OnInit {
 
   // reset value
   async resetValue() {
-    await this.prepareInterstitial();
+    // await this.prepareInterstitial();
     this.loanAmount = '';
     this.annualRate = '';
     this.loanTeam = '';
@@ -247,8 +252,8 @@ export class LoanPage implements OnInit {
   }
 
   async copyWords() {
-    this.alertService.presentToast("Copied")
-    await Clipboard.write({string: this.loanAmountInWords})
+    this.alertService.presentToast("Copied");
+    await Clipboard.write({ string: this.loanAmountInWords });
   }
 
 }

@@ -1,8 +1,7 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
+import { AdMob, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { IonicModule, ToastController } from '@ionic/angular';
 
 @Component({
@@ -28,19 +27,19 @@ export class SipCalculatorPage implements OnInit {
   monthlyInvestment: any;
   clickedCount: number = 0;
 
-  constructor(private router: Router, private toastController: ToastController) { }
+  constructor(private toastController: ToastController) { }
 
   async ngOnInit() {
-    await this.initialize();
+    // await this.initialize();
     await this.banner();
     // await this.prepareInterstitial();
   }
 
-  async initialize() {
-    await AdMob.initialize({
-      initializeForTesting: false,
-    });
-  }
+  // async initialize() {
+  //   await AdMob.initialize({
+  //     initializeForTesting: false,
+  //   });
+  // }
 
   banner() {
     const options: BannerAdOptions = {
@@ -54,16 +53,22 @@ export class SipCalculatorPage implements OnInit {
       () => {
         this.isShowBanner = true;
       });
+
+    // Reload banner ad every 1 minute
+    setInterval(async () => {
+      await AdMob.removeBanner(); // Remove the existing banner
+      this.banner();
+    }, 60000); // 60,000 milliseconds = 1 minute
   }
 
-  async prepareInterstitial() {
-    const options: AdOptions = {
-      adId: 'ca-app-pub-3228515841874235/6851516676',
-      isTesting: true
-    };
-    await AdMob.prepareInterstitial(options);
-    await AdMob.showInterstitial();
-  }
+  // async prepareInterstitial() {
+  //   const options: AdOptions = {
+  //     adId: 'ca-app-pub-3228515841874235/6851516676',
+  //     isTesting: true
+  //   };
+  //   await AdMob.prepareInterstitial(options);
+  //   await AdMob.showInterstitial();
+  // }
 
   // calculate value
   async calculateValue() {

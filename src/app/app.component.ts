@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AdMob } from '@capacitor-community/admob';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
@@ -9,5 +10,13 @@ import { IonicModule } from '@ionic/angular';
   imports: [IonicModule],
 })
 export class AppComponent {
-  constructor() { }
+  constructor() {
+    this.initializeAdmob();
+  }
+
+  async initializeAdmob() {
+    await AdMob.initialize({
+      initializeForTesting: true,
+    });
+  }
 }
