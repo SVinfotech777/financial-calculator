@@ -17,4 +17,8 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-button [disabled]="!isBtnEnable">Submit</ion-button>
+  <p>{{count}}</p>
+  <ion-button (click)="resetTimer()">Reset</ion-button>
 </ion-content>

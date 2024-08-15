@@ -40,7 +40,19 @@ export class HomePage {
     private toastCtrl: ToastController) { }
 
   async ngOnInit() {
-    this.banner();
+    // this.banner();
+    this.startTimer();
+  }
+
+  startTimer() {
+    setInterval(() => {
+      if (this.count > 10) return;
+      this.count++;
+      if (this.count >= 11) {
+        this.isBtnEnable = true;
+        // this.resetTimer();
+      }
+    }, 1000);
   }
 
   isShowBanner: boolean = false;
@@ -56,7 +68,7 @@ export class HomePage {
     this.isShowBanner = true;
 
     // Reload banner ad every 1 minute
-    setInterval(async () => {
+    this.timeInterval = setInterval(async () => {
       await AdMob.removeBanner(); // Remove the existing banner
       this.banner();
     }, 60000); // 60,000 milliseconds = 1 minute
@@ -111,4 +123,16 @@ export class HomePage {
     });
     toasterRef.present();
   }
+
+
+  isBtnEnable = false;
+  count = 0;
+  timeInterval;
+
+  resetTimer() {
+    this.count = 0;
+    this.isBtnEnable = false;
+    clearInterval(this.timeInterval);
+  }
+
 }
