@@ -1,7 +1,7 @@
 import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { AdMob, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AdMob, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { Clipboard } from '@capacitor/clipboard';
 import { IonicModule } from '@ionic/angular';
 import { AlertService } from '../provider/alert.service';
@@ -16,14 +16,12 @@ import { AlertService } from '../provider/alert.service';
     FormsModule,
     NgFor,
     NgIf,
-    CurrencyPipe
+    CurrencyPipe,
+    ReactiveFormsModule
   ],
 })
 export class LoanPage implements OnInit {
 
-  loanAmount: any;
-  annualRate: any;
-  loanTeam: any;
   monthlyRepayment: any;
   principalPaid: any;
   interestPaid: any;
@@ -63,13 +61,31 @@ export class LoanPage implements OnInit {
     'Eighty',
     'Ninety'];
   loanAmountInWords: string = '';
+  interestRateRegex = '^\d{1,2}(\.\d{1,2})?$';
+  loanForm: FormGroup;
 
-
-  constructor(private alertService: AlertService) { }
+  constructor(
+    private alertService: AlertService,
+    private fb: FormBuilder
+  ) { }
 
   async ngOnInit() {
-    // await this.initialize();
-    // await this.prepareInterstitial();
+    this.loanForm = this.fb.group({
+      loanAmount: ['', {
+        validators: [Validators.required],
+      }],
+      annualRate: ['', {
+        validators: [
+          Validators.required,
+          Validators.max(99.99),
+          Validators.pattern(/^\d+(\.\d{1,2})?$/) // Regex to ensure max two decimal places
+        ],
+      }],
+      loanTerm: ['', {
+        validators: [Validators.required, Validators.max(30)],
+      }]
+    });
+
     await this.banner();
 
     // Get the input element by ID
@@ -81,11 +97,10 @@ export class LoanPage implements OnInit {
     });
   }
 
-  // async initialize() {
-  //   await AdMob.initialize({
-  //     initializeForTesting: true,
-  //   });
-  // }
+  // Convenience getter for easy access to form fields
+  get f() {
+    return this.loanForm.controls;
+  }
 
   isShowBanner: boolean = false;
   banner() {
@@ -99,21 +114,6 @@ export class LoanPage implements OnInit {
     AdMob.showBanner(options).then(() => {
       this.isShowBanner = true;
     });
-
-    // Reload banner ad every 1 minute
-    setInterval(async () => {
-      await AdMob.removeBanner(); // Remove the existing banner
-      this.banner();
-    }, 60000); // 60,000 milliseconds = 1 minute
-  }
-
-  async prepareInterstitial() {
-    const options: AdOptions = {
-      adId: 'ca-app-pub-3228515841874235/8765016530',
-      isTesting: true
-    };
-    await AdMob.prepareInterstitial(options);
-    await AdMob.showInterstitial();
   }
 
   getMonthName(monthIndex: number): string {
@@ -127,29 +127,12 @@ export class LoanPage implements OnInit {
 
   // calculate value
   async calculateValue() {
-    let errMsg = '';
-    if (!this.loanAmount) {
-      errMsg = "Please enter loan amount";
-    } else if (!this.annualRate) {
-      errMsg = "Please enter annual rate";
-    } else if (!this.loanTeam) {
-      errMsg = "Please select total years";
-    }
-
-    if (errMsg) {
-      await this.alertService.presentToast(errMsg);
-      return;
-    }
-
-    // if (this.clickedCount == 3) {
-    //   await this.prepareInterstitial();
-    //   this.clickedCount = 0;
-    // }
+    const loanData = this.loanForm.value;
 
     this.clickedCount++;
-    const principal = this.loanAmount;
-    const annualInterestRate = this.annualRate / 100;
-    const loanTerm = this.loanTeam;
+    const principal = loanData.loanAmount;
+    const annualInterestRate = loanData.annualRate / 100;
+    const loanTerm = loanData.loanTerm;
     const monthlyInterestRate = annualInterestRate / 12;
     const numberOfPayments = loanTerm * 12;
 
@@ -202,10 +185,7 @@ export class LoanPage implements OnInit {
 
   // reset value
   async resetValue() {
-    // await this.prepareInterstitial();
-    this.loanAmount = '';
-    this.annualRate = '';
-    this.loanTeam = '';
+    this.loanForm.reset();
 
     this.monthlyRepayment = '';
     this.principalPaid = '';
@@ -256,4 +236,24 @@ export class LoanPage implements OnInit {
     await Clipboard.write({ string: this.loanAmountInWords });
   }
 
+  formatInputTo2Decimal(e: any) {
+    const separator = ".";
+    const decimals = 2;
+    if (isNaN(e.target.value)) return;
+    const input = e.target.value || '0';
+    const a = input.split('');
+    let ns = '';
+    a.forEach((c: any) => { if (!isNaN(c)) { ns = ns + c; } });
+    ns = parseInt(ns, 10).toString();
+    if (ns.length < (decimals + 1)) { ns = ('0'.repeat(decimals + 1) + ns); ns = ns.slice((decimals + 1) * -1); }
+    const ans = ns.split('');
+    let r = '';
+    for (let i = 0; i < ans.length; i++) { if (i === ans.length - decimals) { r = r + separator + ans[i]; } else { r = r + ans[i]; } }
+    e.target.value = r;
+    return r;
+  }
+
+  onSubmit() {
+
+  }
 }

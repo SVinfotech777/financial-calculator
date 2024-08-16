@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdMob, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 import { IonicModule, ToastController } from '@ionic/angular';
 
@@ -12,6 +12,7 @@ import { IonicModule, ToastController } from '@ionic/angular';
   imports: [
     IonicModule,
     FormsModule,
+    ReactiveFormsModule,
     NgFor,
     NgIf
   ],
@@ -21,25 +22,36 @@ export class SipCalculatorPage implements OnInit {
   totalInvestment: any;
   estimatedReturns: any;
   totalValue: any;
-
-  totalYears: any;
-  returnRate: any;
-  monthlyInvestment: any;
   clickedCount: number = 0;
+  sipForm: FormGroup;
 
-  constructor(private toastController: ToastController) { }
+  constructor(
+    private toastController: ToastController,
+    private fb: FormBuilder
+  ) { }
 
   async ngOnInit() {
-    // await this.initialize();
+    this.sipForm = this.fb.group({
+      monthlyInvestment: ['', {
+        validators: [Validators.required],
+      }],
+      returnRate: ['', {
+        validators: [
+          Validators.required,
+          Validators.pattern(/^\d+(\.\d{1,2})?$/) // Regex to ensure max two decimal places
+        ],
+      }],
+      totalYears: ['', {
+        validators: [Validators.required],
+      }]
+    });
     await this.banner();
-    // await this.prepareInterstitial();
   }
 
-  // async initialize() {
-  //   await AdMob.initialize({
-  //     initializeForTesting: false,
-  //   });
-  // }
+  // Convenience getter for easy access to form fields
+  get f() {
+    return this.sipForm.controls;
+  }
 
   banner() {
     const options: BannerAdOptions = {
@@ -53,49 +65,16 @@ export class SipCalculatorPage implements OnInit {
       () => {
         this.isShowBanner = true;
       });
-
-    // Reload banner ad every 1 minute
-    setInterval(async () => {
-      await AdMob.removeBanner(); // Remove the existing banner
-      this.banner();
-    }, 60000); // 60,000 milliseconds = 1 minute
   }
-
-  // async prepareInterstitial() {
-  //   const options: AdOptions = {
-  //     adId: 'ca-app-pub-3228515841874235/6851516676',
-  //     isTesting: true
-  //   };
-  //   await AdMob.prepareInterstitial(options);
-  //   await AdMob.showInterstitial();
-  // }
 
   // calculate value
   async calculateValue() {
-
-    let errMsg = '';
-    if (!this.monthlyInvestment) {
-      errMsg = "Please enter monthly investment amount";
-    } else if (!this.returnRate) {
-      errMsg = "Please enter return rate";
-    } else if (!this.totalYears) {
-      errMsg = "Please enter total years";
-    }
-
-    if (errMsg) {
-      await this.presentToast(errMsg);
-      return;
-    }
-
-    // if (this.clickedCount == 3) {
-    //   await this.prepareInterstitial();
-    //   this.clickedCount = 0;
-    // }
+    const sipData = this.sipForm.value;
     this.clickedCount++;
-    var investment = this.monthlyInvestment; //principal amount
-    var annualRate = this.returnRate;
+    var investment = sipData.monthlyInvestment; //principal amount
+    var annualRate = sipData.returnRate;
     var monthlyRate = annualRate / 12 / 100;  //Rate of interest
-    var years = this.totalYears;
+    var years = sipData.totalYears;
     var months = years * 12;  //Time period
     this.totalInvestment = (months * investment).toLocaleString('en-IN');
 
@@ -105,10 +84,7 @@ export class SipCalculatorPage implements OnInit {
 
   // reset value
   async resetValue() {
-    // await this.prepareInterstitial();
-    this.monthlyInvestment = '';
-    this.returnRate = '';
-    this.totalYears = '';
+    this.sipForm.reset()
     this.totalInvestment = '';
     this.estimatedReturns = '';
     this.totalValue = '';

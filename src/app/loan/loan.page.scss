@@ -25,3 +25,8 @@
 .data-col:last-child {
   border-right: 0px !important;
 }
+
+.error-msg {
+  font-weight: bold;
+  color: var(--ion-color-danger);
+}

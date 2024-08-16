@@ -55,11 +55,11 @@ export class HomePage {
     await AdMob.showBanner(options);
     this.isShowBanner = true;
 
-    // Reload banner ad every 1 minute
-    setInterval(async () => {
-      await AdMob.removeBanner(); // Remove the existing banner
-      this.banner();
-    }, 60000); // 60,000 milliseconds = 1 minute
+    // // Reload banner ad every 1 minute
+    // setInterval(async () => {
+    //   await AdMob.removeBanner(); // Remove the existing banner
+    //   this.banner();
+    // }, 60000); // 60,000 milliseconds = 1 minute
   }
 
 
